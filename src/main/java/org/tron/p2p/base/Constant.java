@@ -6,6 +6,13 @@ import java.util.List;
 public class Constant {
 
   public static final int NODE_ID_LEN = 64;
+  public static final int SESSION_KEY_SIZE = 8;
+  public static final int REQ_ID_SIZE = 8;
+  public static final int NODE_ID_SIZE = 32;
+  public static final int MAX_NODES = 3000;
+
+  public static final int CALL_TIMEOUT = 5000;
+
   public static final List<String> ipV4Urls = Arrays.asList(
       "http://checkip.amazonaws.com", "https://ifconfig.me/ip", "https://4.ipw.cn/");
   public static final List<String> ipV6Urls = Arrays.asList(

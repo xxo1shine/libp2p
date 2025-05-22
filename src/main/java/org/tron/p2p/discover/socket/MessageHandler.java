@@ -30,19 +30,19 @@ public class MessageHandler extends SimpleChannelInboundHandler<UdpEvent>
 
   @Override
   public void channelRead0(ChannelHandlerContext ctx, UdpEvent udpEvent) {
-    log.debug("Rcv udp msg type {}, len {} from {} ",
+    log.debug("Rcv udp msg type {}, len {} from {}, {} ",
         udpEvent.getMessage().getType(),
         udpEvent.getMessage().getSendData().length,
-        udpEvent.getAddress());
+        udpEvent.getAddress(), udpEvent.getMessage());
     eventHandler.handleEvent(udpEvent);
   }
 
   @Override
   public void accept(UdpEvent udpEvent) {
-    log.debug("Send udp msg type {}, len {} to {} ",
+    log.debug("Send udp msg type {}, len {} to {}, {}",
         udpEvent.getMessage().getType(),
         udpEvent.getMessage().getSendData().length,
-        udpEvent.getAddress());
+        udpEvent.getAddress(), udpEvent.getMessage());
     InetSocketAddress address = udpEvent.getAddress();
     sendPacket(udpEvent.getMessage().getSendData(), address);
   }

@@ -1,5 +1,6 @@
 package org.tron.p2p.utils;
 
+import com.google.protobuf.ByteString;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -89,6 +90,13 @@ public class NetUtil {
     byte[] id = new byte[Constant.NODE_ID_LEN];
     gen.nextBytes(id);
     return id;
+  }
+
+  public static ByteString getRandomBytes(int size) {
+    Random gen = new Random();
+    byte[] id = new byte[size];
+    gen.nextBytes(id);
+    return ByteString.copyFrom(id);
   }
 
   private static String getExternalIp(String url, boolean isAskIpv4) {
@@ -276,5 +284,34 @@ public class NetUtil {
     }
     log.warn("Can't get lan IP. Fall back to {}", IPADDRESS_LOCALHOST);
     return IPADDRESS_LOCALHOST;
+  }
+
+  public static boolean isPrivateIPv4(InetAddress address) {
+    byte[] bytes = address.getAddress();
+    int first = bytes[0] & 0xFF;
+    int second = bytes[1] & 0xFF;
+    return (first == 10) ||
+            (first == 172 && second >= 16 && second <= 31) ||
+            (first == 192 && second == 168);
+  }
+
+  public static boolean isPrivateIPv6(InetAddress address) {
+    byte[] bytes = address.getAddress();
+    int firstByte = bytes[0] & 0xFF;
+
+    // Unique Local Address fc00::/7（fc00::/8、fd00::/8）
+    if ((firstByte & 0xFE) == 0xFC) {
+      return true;
+    }
+    // Link-Local Address fe80::/10
+    return (firstByte == 0xFE) && ((bytes[1] & 0xC0) == 0x80);
+  }
+
+  public static boolean isPrivateIp(InetAddress address) {
+    if (address instanceof Inet4Address) {
+      return isPrivateIPv4(address);
+    } else {
+      return isPrivateIPv6(address);
+    }
   }
 }

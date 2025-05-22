@@ -32,12 +32,10 @@ public class FindNodeMessage extends KadMessage {
     return this.findNeighbours.getTargetId().toByteArray();
   }
 
-  @Override
   public long getTimestamp() {
     return this.findNeighbours.getTimestamp();
   }
 
-  @Override
   public Node getFrom() {
     return NetUtil.getNode(findNeighbours.getFrom());
   }

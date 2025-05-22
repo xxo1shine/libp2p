@@ -28,6 +28,7 @@ public class P2pConfig {
   private boolean discoverEnable = true;
   private boolean disconnectionPolicyEnable = false;
   private boolean nodeDetectEnable = false;
+  private boolean Kad2Enable = true;
 
   //dns read config
   private List<String> treeUrls = new ArrayList<>();

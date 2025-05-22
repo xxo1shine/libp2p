@@ -7,7 +7,7 @@ import org.tron.p2p.protos.Connect;
 
 public class PingMessage extends Message {
 
-  private Connect.KeepAliveMessage keepAliveMessage;
+  private final Connect.KeepAliveMessage keepAliveMessage;
 
   public PingMessage(byte[] data) throws Exception {
     super(MessageType.KEEP_ALIVE_PING, data);

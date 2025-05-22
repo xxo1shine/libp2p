@@ -45,12 +45,10 @@ public class NeighborsMessage extends KadMessage {
     return nodes;
   }
 
-  @Override
   public long getTimestamp() {
     return this.neighbours.getTimestamp();
   }
 
-  @Override
   public Node getFrom() {
     return NetUtil.getNode(neighbours.getFrom());
   }

@@ -37,12 +37,10 @@ public class PingMessage extends KadMessage {
     return NetUtil.getNode(this.pingMessage.getTo());
   }
 
-  @Override
   public long getTimestamp() {
     return this.pingMessage.getTimestamp();
   }
 
-  @Override
   public Node getFrom() {
     return NetUtil.getNode(pingMessage.getFrom());
   }

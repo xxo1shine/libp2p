@@ -16,8 +16,6 @@ public abstract class KadMessage extends Message {
 
   public abstract Node getFrom();
 
-  public abstract long getTimestamp();
-
   public static Endpoint getEndpointFromNode(Node node) {
     Endpoint.Builder builder = Endpoint.newBuilder()
         .setPort(node.getPort());

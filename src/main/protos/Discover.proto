@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "google/protobuf/any.proto";
+
 option java_package = "org.tron.p2p.protos";
 option java_outer_classname = "Discover";
 
@@ -47,4 +49,38 @@ message DnsRoot {
   }
   TreeRoot treeRoot = 1;
   bytes signature = 2;
+}
+
+message Node {
+  bytes nodeId = 1;
+  bytes ip = 2;
+  int32 port = 3;
+  map<string, bytes>  meta = 10;
+}
+
+message Identity {
+  Node node = 1;
+  bytes nonce = 2;
+  map<string, bytes> params = 10;
+}
+
+message Ping {
+  bytes reqId = 1;
+  bytes session = 2;
+}
+
+message Pong {
+  bytes reqId = 1;
+  bytes toIp = 2;
+}
+
+message FindNodes {
+  bytes reqId = 1;
+  bytes session = 2;
+  bytes targetId = 3;
+}
+
+message Nodes {
+  bytes reqId = 1;
+  repeated Node  nodes = 2;
 }

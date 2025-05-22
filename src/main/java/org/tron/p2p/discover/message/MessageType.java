@@ -13,6 +13,18 @@ public enum MessageType {
 
   KAD_NEIGHBORS((byte) 0x04),
 
+  KAD2_IdentityRequest((byte) 0x11),
+
+  KAD2_IdentityResponse((byte) 0x12),
+
+  KAD2_Ping((byte) 0x13),
+
+  KAD2_Pong((byte) 0x14),
+
+  KAD2_FindNodes((byte) 0x15),
+
+  KAD2_Nodes((byte) 0x16),
+
   UNKNOWN((byte) 0xFF);
 
   private final byte type;

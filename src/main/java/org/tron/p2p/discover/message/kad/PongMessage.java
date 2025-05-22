@@ -31,12 +31,10 @@ public class PongMessage extends KadMessage {
     return this.pongMessage.getEcho();
   }
 
-  @Override
   public long getTimestamp() {
     return this.pongMessage.getTimestamp();
   }
 
-  @Override
   public Node getFrom() {
     return NetUtil.getNode(pongMessage.getFrom());
   }

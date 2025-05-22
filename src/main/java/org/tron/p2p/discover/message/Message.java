@@ -5,6 +5,12 @@ import org.tron.p2p.discover.message.kad.FindNodeMessage;
 import org.tron.p2p.discover.message.kad.NeighborsMessage;
 import org.tron.p2p.discover.message.kad.PingMessage;
 import org.tron.p2p.discover.message.kad.PongMessage;
+import org.tron.p2p.discover.message.kad2.FindNodes;
+import org.tron.p2p.discover.message.kad2.IdentityRequest;
+import org.tron.p2p.discover.message.kad2.IdentityResponse;
+import org.tron.p2p.discover.message.kad2.Nodes;
+import org.tron.p2p.discover.message.kad2.Ping;
+import org.tron.p2p.discover.message.kad2.Pong;
 import org.tron.p2p.exception.P2pException;
 
 public abstract class Message {
@@ -32,6 +38,24 @@ public abstract class Message {
         break;
       case KAD_NEIGHBORS:
         message = new NeighborsMessage(data);
+        break;
+      case KAD2_Ping:
+        message = new Ping(data);
+        break;
+      case KAD2_Pong:
+        message = new Pong(data);
+        break;
+      case KAD2_IdentityRequest:
+        message = new IdentityRequest(data);
+        break;
+      case KAD2_IdentityResponse:
+        message = new IdentityResponse(data);
+        break;
+      case KAD2_FindNodes:
+        message = new FindNodes(data);
+        break;
+      case KAD2_Nodes:
+        message = new Nodes(data);
         break;
       default:
         throw new P2pException(P2pException.TypeEnum.NO_SUCH_MESSAGE, "type=" + type);

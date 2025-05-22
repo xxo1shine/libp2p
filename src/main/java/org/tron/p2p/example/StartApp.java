@@ -76,7 +76,7 @@ public class StartApp {
 
     if (Parameter.p2pConfig.getMinConnections() > Parameter.p2pConfig.getMaxConnections()) {
       log.error("Check maxConnections({}) >= minConnections({}) failed",
-          Parameter.p2pConfig.getMaxConnections(), Parameter.p2pConfig.getMinConnections());
+              Parameter.p2pConfig.getMaxConnections(), Parameter.p2pConfig.getMinConnections());
       System.exit(0);
     }
 
@@ -192,12 +192,12 @@ public class StartApp {
 
       if (cli.hasOption(configKnownUrls)) {
         publishConfig.setKnownTreeUrls(
-            Arrays.asList(cli.getOptionValue(configKnownUrls).split(",")));
+                Arrays.asList(cli.getOptionValue(configKnownUrls).split(",")));
       }
 
       if (cli.hasOption(configStaticNodes)) {
         publishConfig.setStaticNodes(
-            parseInetSocketAddressList(cli.getOptionValue(configStaticNodes)));
+                parseInetSocketAddressList(cli.getOptionValue(configStaticNodes)));
       }
 
       if (cli.hasOption(configDomain)) {
@@ -211,7 +211,7 @@ public class StartApp {
         double changeThreshold = Double.parseDouble(cli.getOptionValue(configChangeThreshold));
         if (changeThreshold >= 1.0) {
           log.error("Check {}, range between (0.0 ~ 1.0]",
-              configChangeThreshold);
+                  configChangeThreshold);
         } else {
           publishConfig.setChangeThreshold(changeThreshold);
         }
@@ -284,7 +284,7 @@ public class StartApp {
   private Options getKadOptions() {
 
     Option opt1 = new Option("s", "seed-nodes", true,
-        "seed node(s), required, ip:port[,ip:port[...]]");
+            "seed node(s), required, ip:port[,ip:port[...]]");
     Option opt2 = new Option("t", "trust-ips", true, "trust ip(s), ip[,ip[...]]");
     Option opt3 = new Option("a", "active-nodes", true, "active node(s), ip:port[,ip:port[...]]");
     Option opt4 = new Option("M", "max-connection", true, "max connection number, int, default 50");
@@ -293,7 +293,7 @@ public class StartApp {
     Option opt7 = new Option("p", "port", true, "UDP & TCP port, int, default 18888");
     Option opt8 = new Option("v", "version", true, "p2p version, int, default 1");
     Option opt9 = new Option("ma", "min-active-connection", true,
-        "min active connection number, int, default 2");
+            "min active connection number, int, default 2");
     Option opt10 = new Option("h", "help", false, "print help message");
 
     Options group = new Options();
@@ -312,7 +312,7 @@ public class StartApp {
 
   private Options getDnsReadOption() {
     Option opt = new Option("u", "url-schemes", true,
-        "dns url(s) to get nodes, url format tree://{pubkey}@{domain}, url[,url[...]]");
+            "dns url(s) to get nodes, url format tree://{pubkey}@{domain}, url[,url[...]]");
     Options group = new Options();
     group.addOption(opt);
     return group;
@@ -321,29 +321,29 @@ public class StartApp {
   private Options getDnsPublishOption() {
     Option opt1 = new Option(configPublish, configPublish, false, "enable dns publish");
     Option opt2 = new Option(null, configDnsPrivate, true,
-        "dns private key used to publish, required, hex string of length 64");
+            "dns private key used to publish, required, hex string of length 64");
     Option opt3 = new Option(null, configKnownUrls, true,
-        "known dns urls to publish, url format tree://{pubkey}@{domain}, optional, url[,url[...]]");
+            "known dns urls to publish, url format tree://{pubkey}@{domain}, optional, url[,url[...]]");
     Option opt4 = new Option(null, configStaticNodes, true,
-        "static nodes to publish, if exist then nodes from kad will be ignored, optional, ip:port[,ip:port[...]]");
+            "static nodes to publish, if exist then nodes from kad will be ignored, optional, ip:port[,ip:port[...]]");
     Option opt5 = new Option(null, configDomain, true,
-        "dns domain to publish nodes, required, string");
+            "dns domain to publish nodes, required, string");
     Option opt6 = new Option(null, configChangeThreshold, true,
-        "change threshold of add and delete to publish, optional, should be > 0 and < 1.0, default 0.1");
+            "change threshold of add and delete to publish, optional, should be > 0 and < 1.0, default 0.1");
     Option opt7 = new Option(null, configMaxMergeSize, true,
-        "max merge size to merge node to a leaf node in dns tree, optional, should be [1~5], default 5");
+            "max merge size to merge node to a leaf node in dns tree, optional, should be [1~5], default 5");
     Option opt8 = new Option(null, configServerType, true,
-        "dns server to publish, required, only aws or aliyun is support");
+            "dns server to publish, required, only aws or aliyun is support");
     Option opt9 = new Option(null, configAccessId, true,
-        "access key id of aws or aliyun api, required, string");
+            "access key id of aws or aliyun api, required, string");
     Option opt10 = new Option(null, configAccessSecret, true,
-        "access key secret of aws or aliyun api, required, string");
+            "access key secret of aws or aliyun api, required, string");
     Option opt11 = new Option(null, configAwsRegion, true,
-        "if server-type is aws, it's region of aws api, such as \"eu-south-1\", required, string");
+            "if server-type is aws, it's region of aws api, such as \"eu-south-1\", required, string");
     Option opt12 = new Option(null, configHostZoneId, true,
-        "if server-type is aws, it's host zone id of aws's domain, optional, string");
+            "if server-type is aws, it's host zone id of aws's domain, optional, string");
     Option opt13 = new Option(null, configAliEndPoint, true,
-        "if server-type is aliyun, it's endpoint of aws dns server, required, string");
+            "if server-type is aliyun, it's endpoint of aws dns server, required, string");
 
     Options group = new Options();
     group.addOption(opt1);
@@ -363,7 +363,7 @@ public class StartApp {
   }
 
   private void printHelpMessage(Options kadOptions, Options dnsReadOptions,
-      Options dnsPublishOptions) {
+                                Options dnsPublishOptions) {
     HelpFormatter helpFormatter = new HelpFormatter();
     helpFormatter.printHelp("available p2p discovery cli options:", kadOptions);
     helpFormatter.setSyntaxPrefix("\n");

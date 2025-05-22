@@ -18,12 +18,14 @@ import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.tron.p2p.base.Parameter;
 import org.tron.p2p.discover.DiscoverService;
 import org.tron.p2p.discover.Node;
+import org.tron.p2p.discover.message.Message;
 import org.tron.p2p.discover.message.kad.FindNodeMessage;
 import org.tron.p2p.discover.message.kad.KadMessage;
 import org.tron.p2p.discover.message.kad.NeighborsMessage;
 import org.tron.p2p.discover.message.kad.PingMessage;
 import org.tron.p2p.discover.message.kad.PongMessage;
 import org.tron.p2p.discover.protocol.kad.table.NodeTable;
+import org.tron.p2p.discover.protocol.kad2.Kad2Service;
 import org.tron.p2p.discover.socket.UdpEvent;
 
 @Slf4j(topic = "net")
@@ -48,6 +50,15 @@ public class KadService implements DiscoverService {
 
   private ScheduledExecutorService pongTimer;
   private DiscoverTask discoverTask;
+  private Kad2Service kad2Service;
+
+  public KadService() {
+
+  }
+
+  public KadService(Kad2Service kad2Service) {
+    this.kad2Service = kad2Service;
+  }
 
   public void init() {
     for (InetSocketAddress address : Parameter.p2pConfig.getSeedNodes()) {
@@ -66,6 +77,7 @@ public class KadService implements DiscoverService {
       discoverTask = new DiscoverTask(this);
       discoverTask.init();
     }
+    kad2Service.init();
   }
 
   public void close() {
@@ -81,6 +93,7 @@ public class KadService implements DiscoverService {
       log.error("Close nodeManagerTasksTimer or pongTimer failed", e);
       throw e;
     }
+    kad2Service.close();
   }
 
   public List<Node> getConnectableNodes() {
@@ -105,6 +118,7 @@ public class KadService implements DiscoverService {
   @Override
   public void setMessageSender(Consumer<UdpEvent> messageSender) {
     this.messageSender = messageSender;
+    kad2Service.setMessageSender(messageSender);
   }
 
   @Override
@@ -116,21 +130,40 @@ public class KadService implements DiscoverService {
         getNodeHandler(node);
       }
     }
+    kad2Service.channelActivated();
   }
 
   @Override
   public void handleEvent(UdpEvent udpEvent) {
-    KadMessage m = (KadMessage) udpEvent.getMessage();
+    Message msg = udpEvent.getMessage();
+    switch (msg.getType()) {
+      case KAD_PING:
+      case KAD_PONG:
+      case KAD_FIND_NODE:
+      case KAD_NEIGHBORS:
+        handleKadMsg((KadMessage) msg, udpEvent.getAddress());
+        break;
+      case KAD2_IdentityRequest:
+      case KAD2_IdentityResponse:
+      case KAD2_Ping:
+      case KAD2_Pong:
+      case KAD2_FindNodes:
+      case KAD2_Nodes:
+        kad2Service.handleEvent(udpEvent);
+        break;
+      default:
+        break;
+    }
+  }
 
-    InetSocketAddress sender = udpEvent.getAddress();
-
+  private void handleKadMsg(KadMessage m, InetSocketAddress sender) {
     Node n;
     if (sender.getAddress() instanceof Inet4Address) {
       n = new Node(m.getFrom().getId(), sender.getHostString(), m.getFrom().getHostV6(),
-          sender.getPort(), m.getFrom().getPort());
+              sender.getPort(), m.getFrom().getPort());
     } else {
       n = new Node(m.getFrom().getId(), m.getFrom().getHostV4(), sender.getHostString(),
-          sender.getPort(), m.getFrom().getPort());
+              sender.getPort(), m.getFrom().getPort());
     }
 
     NodeHandler nodeHandler = getNodeHandler(n);
