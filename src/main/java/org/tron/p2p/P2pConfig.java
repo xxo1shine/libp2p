@@ -26,6 +26,7 @@ public class P2pConfig {
   private int minActiveConnections = 2;
   private int maxConnectionsWithSameIp = 2;
   private boolean discoverEnable = true;
+  private boolean bucketScanEnable = false;
   private boolean disconnectionPolicyEnable = false;
   private boolean nodeDetectEnable = false;
 

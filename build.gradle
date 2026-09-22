@@ -24,6 +24,22 @@ def protocGenVersion = '1.60.0' // https://github.com/grpc/grpc-java/pull/11371 
 
 mainClassName = 'org.tron.p2p.example.StartApp'
 
+task runNodeCensus(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'org.tron.p2p.example.NodeCensusApp'
+}
+
+task nodeCensusJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+    archiveBaseName.set('node-census')
+    archiveClassifier.set('')
+    archiveVersion.set('')
+    from sourceSets.main.output
+    configurations = [project.configurations.runtimeClasspath]
+    exclude 'META-INF/INDEX.LIST'
+    exclude 'META-INF/*.SF', 'META-INF/*.RSA', 'META-INF/*.DSA'
+    manifest.attributes 'Main-Class': 'org.tron.p2p.example.NodeCensusApp'
+}
+
 repositories {
     mavenLocal()
     mavenCentral()

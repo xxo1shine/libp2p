@@ -13,6 +13,7 @@ import org.tron.p2p.connection.Channel;
 import org.tron.p2p.connection.ChannelManager;
 import org.tron.p2p.discover.Node;
 import org.tron.p2p.discover.NodeManager;
+import org.tron.p2p.discover.protocol.kad.NeighborsHandler;
 import org.tron.p2p.dns.DnsManager;
 import org.tron.p2p.exception.P2pException;
 import org.tron.p2p.stats.P2pStats;
@@ -27,7 +28,9 @@ public class P2pService {
   public void start(P2pConfig p2pConfig) {
     Parameter.p2pConfig = p2pConfig;
     NodeManager.init();
-    ChannelManager.init();
+    if (!p2pConfig.isBucketScanEnable()) {
+      ChannelManager.init();
+    }
     DnsManager.init();
     log.info("P2p service started");
 
@@ -78,6 +81,10 @@ public class P2pService {
     nodes.addAll(NodeManager.getAllNodes());
     nodes.addAll(DnsManager.getDnsNodes());
     return new ArrayList<>(nodes);
+  }
+
+  public List<NeighborsHandler.PendingNode> getPendingNodes() {
+    return NodeManager.getPendingNodes();
   }
 
   public void updateNodeId(Channel channel, String nodeId) {

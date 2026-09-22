@@ -3,6 +3,7 @@ package org.tron.p2p.discover;
 import java.util.List;
 import org.tron.p2p.base.Parameter;
 import org.tron.p2p.discover.protocol.kad.KadService;
+import org.tron.p2p.discover.protocol.kad.NeighborsHandler;
 import org.tron.p2p.discover.socket.DiscoverServer;
 
 public class NodeManager {
@@ -42,6 +43,10 @@ public class NodeManager {
 
   public static List<Node> getAllNodes() {
     return discoverService.getAllNodes();
+  }
+
+  public static List<NeighborsHandler.PendingNode> getPendingNodes() {
+    return ((KadService) discoverService).getPendingNodes();
   }
 
 }

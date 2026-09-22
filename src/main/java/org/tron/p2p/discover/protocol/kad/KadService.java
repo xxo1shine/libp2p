@@ -48,6 +48,7 @@ public class KadService implements DiscoverService {
 
   private ScheduledExecutorService pongTimer;
   private DiscoverTask discoverTask;
+  private NeighborsHandler neighborsHandler;
 
   public void init() {
     for (InetSocketAddress address : Parameter.p2pConfig.getSeedNodes()) {
@@ -62,9 +63,12 @@ public class KadService implements DiscoverService {
         Parameter.p2pConfig.getIpv6(), Parameter.p2pConfig.getPort());
     this.table = new NodeTable(homeNode);
 
-    if (Parameter.p2pConfig.isDiscoverEnable()) {
+    if (Parameter.p2pConfig.isDiscoverEnable() && !Parameter.p2pConfig.isBucketScanEnable()) {
       discoverTask = new DiscoverTask(this);
       discoverTask.init();
+    }
+    if (Parameter.p2pConfig.isDiscoverEnable() && Parameter.p2pConfig.isBucketScanEnable()) {
+      neighborsHandler = new NeighborsHandler(this);
     }
   }
 
@@ -76,6 +80,9 @@ public class KadService implements DiscoverService {
 
       if (discoverTask != null) {
         discoverTask.close();
+      }
+      if (neighborsHandler != null) {
+        neighborsHandler.close();
       }
     } catch (Exception e) {
       log.error("Close nodeManagerTasksTimer or pongTimer failed", e);
@@ -95,11 +102,18 @@ public class KadService implements DiscoverService {
   }
 
   public List<Node> getAllNodes() {
+    if (neighborsHandler != null) {
+      return neighborsHandler.getNodes();
+    }
     List<Node> nodeList = new ArrayList<>();
     for (NodeHandler nodeHandler : nodeHandlerMap.values()) {
       nodeList.add(nodeHandler.getNode());
     }
     return nodeList;
+  }
+
+  public List<NeighborsHandler.PendingNode> getPendingNodes() {
+    return neighborsHandler == null ? new ArrayList<>() : neighborsHandler.getPendingNodes();
   }
 
   @Override
@@ -109,6 +123,10 @@ public class KadService implements DiscoverService {
 
   @Override
   public void channelActivated() {
+    if (neighborsHandler != null) {
+      neighborsHandler.start(bootNodes);
+      return;
+    }
     if (!inited) {
       inited = true;
 
@@ -123,6 +141,15 @@ public class KadService implements DiscoverService {
     KadMessage m = (KadMessage) udpEvent.getMessage();
 
     InetSocketAddress sender = udpEvent.getAddress();
+
+    if (neighborsHandler != null) {
+      if (m instanceof NeighborsMessage) {
+        neighborsHandler.handle((NeighborsMessage) m, sender);
+      } else if (m instanceof PingMessage) {
+        neighborsHandler.handlePing((PingMessage) m, sender);
+      }
+      return;
+    }
 
     Node n;
     if (sender.getAddress() instanceof Inet4Address) {
